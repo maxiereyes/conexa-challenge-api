@@ -10,13 +10,13 @@ import {
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Roles } from 'src/common/decorator/roles.decorator';
-import { UserRolesEnum } from 'src/user/enum/user-roles.enum';
-import { ApiResponseSuccessCustom } from 'src/common/decorator/response-success-custom.decorator';
+import { AccessTokenGuard } from '../common/guards/access-token.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
+import { UserRolesEnum } from '../user/enum/user-roles.enum';
+import { ApiResponseSuccessCustom } from '../common/decorator/response-success-custom.decorator';
 import { MovieResponseDto } from './dto/movie-response.dto';
-import { ExceptionFilterDto } from 'src/common/exception-filters/exception-filter';
+import { ExceptionFilterDto } from '../common/exception-filters/exception-filter';
 
 @Controller('movie')
 @ApiTags('Movies')
