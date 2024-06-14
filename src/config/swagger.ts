@@ -5,6 +5,7 @@ export function generateSwaggerDocs(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Conexa Challenge')
     .setDescription('Api - Documentation')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 

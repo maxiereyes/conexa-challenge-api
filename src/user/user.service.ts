@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entitites';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from './dto/user-response.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponseWithoutPassDto } from './dto/user-response-without-pass.dto';
 
 @Injectable()
 export class UserService {
@@ -10,27 +15,70 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  create(userDto: any) {
-    return 'create user';
+  async create(userDto: CreateUserDto) {
+    const user = new User({
+      ...userDto,
+    });
+
+    return await this.usersRepository.save(user);
   }
 
-  findByEmail(email: string) {
-    return 'find user by email';
+  async findByEmail(email: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return null;
+    }
+
+    const mapperUser = plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
+
+    return mapperUser;
   }
 
-  findById(id: string) {
-    return 'find user by id';
+  async findById(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      return null;
+    }
+
+    return plainToInstance(UserResponseWithoutPassDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  findAll() {
-    return 'find all users';
+  async findByIdWithRefreshToken(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    return user;
   }
 
-  update(id: string, updateUserDto: any) {
-    return 'update user';
+  async findAll() {
+    const users = await this.usersRepository.find();
+
+    return plainToInstance(UserResponseWithoutPassDto, [users], {
+      excludeExtraneousValues: true,
+    });
   }
 
-  delete(id: string) {
-    return 'delete user';
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    const updateUser = new User({
+      ...user,
+      ...updateUserDto,
+    });
+
+    return await this.usersRepository.save(updateUser);
+  }
+
+  async delete(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    return await this.usersRepository.remove(user);
   }
 }
