@@ -1,5 +1,5 @@
-import { UserRolesEnum } from 'src/user/enum/user-roles.enum';
-import { UserStatusEnum } from 'src/user/enum/user-status.enum';
+import { UserRolesEnum } from '../user/enum/user-roles.enum';
+import { UserStatusEnum } from '../user/enum/user-status.enum';
 import {
   Column,
   CreateDateColumn,

@@ -30,7 +30,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor(new LoggerService()));
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   generateSwaggerDocs(app);
 
