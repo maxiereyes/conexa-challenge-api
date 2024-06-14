@@ -17,6 +17,8 @@ import { UserRolesEnum } from '../user/enum/user-roles.enum';
 import { ApiResponseSuccessCustom } from '../common/decorator/response-success-custom.decorator';
 import { MovieResponseDto } from './dto/movie-response.dto';
 import { ExceptionFilterDto } from '../common/exception-filters/exception-filter';
+import { UpdateMovieDto } from './dto/update-movie.dto';
+import { CreateMovieDto } from './dto/create-movie.dto';
 
 @Controller('movie')
 @ApiTags('Movies')
@@ -29,7 +31,7 @@ export class MovieController {
   @Post()
   @ApiResponseSuccessCustom(MovieResponseDto)
   @ApiBadRequestResponse({ type: ExceptionFilterDto })
-  async create(@Body() payload: any) {
+  async create(@Body() payload: CreateMovieDto) {
     return await this.movieService.create(payload);
   }
 
@@ -39,7 +41,7 @@ export class MovieController {
   @Patch(':id')
   @ApiResponseSuccessCustom(MovieResponseDto)
   @ApiBadRequestResponse({ type: ExceptionFilterDto })
-  async update(@Body() payload: any, @Param('id') id: string) {
+  async update(@Body() payload: UpdateMovieDto, @Param('id') id: string) {
     return await this.movieService.update(id, payload);
   }
 
