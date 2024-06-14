@@ -82,11 +82,7 @@ export class UserService {
     return await this.usersRepository.remove(user);
   }
 
-  async deleteByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new BadRequestException('user not found');
-    }
-    return await this.usersRepository.remove(user);
+  async clearAllUsers() {
+    return await this.usersRepository.clear();
   }
 }

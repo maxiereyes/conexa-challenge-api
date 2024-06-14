@@ -19,7 +19,7 @@ const config: TypeOrmModuleOptions = {
   migrations: [__dirname + '/../data/migrations/*.{js,ts}'],
   autoLoadEntities: true,
   logging: process.env.DATABASE_LOGGING === 'true' ? true : false,
-  ssl: false,
+  ssl: process.env.NODE_ENV === 'local' ? false : true,
 };
 
 export default registerAs('typeorm', () => config);

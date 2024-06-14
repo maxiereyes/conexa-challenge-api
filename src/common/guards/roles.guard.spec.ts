@@ -6,9 +6,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 describe('RolesGuard', () => {
   let rolesGuard: RolesGuard;
   let reflector: Reflector;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [RolesGuard, Reflector],
     }).compile();
 
@@ -53,6 +54,10 @@ describe('RolesGuard', () => {
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(['admin']);
 
     expect(rolesGuard.canActivate(mockContext)).toBe(true);
+  });
+
+  afterAll(async () => {
+    await module.close();
   });
 });
 

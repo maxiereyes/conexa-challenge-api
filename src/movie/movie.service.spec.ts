@@ -7,18 +7,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MovieModule } from './movie.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
-import typeorm from '../config/typeorm';
+import typeorm, { connectionSource } from '../config/typeorm';
 import { MovieResponseDto } from './dto/movie-response.dto';
 import { BadRequestException } from '@nestjs/common';
 
 describe('MovieService', () => {
   let movieService: MovieService;
   let movieRepository: Repository<Movie>;
+  let module: TestingModule;
 
   const movieRepositoryToken: string | Function = getRepositoryToken(Movie);
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -173,5 +174,10 @@ describe('MovieService', () => {
 
   afterEach(async () => {
     jest.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await connectionSource.destroy();
+    await module.close();
   });
 });

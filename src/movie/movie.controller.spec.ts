@@ -12,11 +12,12 @@ import { BadRequestException } from '@nestjs/common';
 describe('MovieController', () => {
   let movieController: MovieController;
   let movieService: MovieService;
+  let module: TestingModule;
 
   const movieRepositoryToken: string | Function = getRepositoryToken(Movie);
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [MovieController],
       providers: [
         MovieService,
@@ -168,5 +169,9 @@ describe('MovieController', () => {
 
   afterEach(async () => {
     jest.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await module.close();
   });
 });

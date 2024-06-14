@@ -3,13 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import configuration from '../config/configuration';
-import typeorm from '../config/typeorm';
+import typeorm, { connectionSource } from '../config/typeorm';
 import { UserModule } from '../user/user.module';
 import { UserService } from '../user/user.service';
 import { AuthModule } from './auth.module';
 import { AuthService } from './auth.service';
 import { User } from '../entitites';
-import { Repository } from 'typeorm';
+import { DataSource, getConnection, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UserRolesEnum } from '../user/enum/user-roles.enum';
@@ -20,9 +20,10 @@ describe('AuthService', () => {
   let authService: AuthService;
   let userService: UserService;
   let jwtService: JwtService;
+  let module: TestingModule;
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -53,8 +54,6 @@ describe('AuthService', () => {
 
     authService = module.get<AuthService>(AuthService);
     userService = module.get<UserService>(UserService);
-
-    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -144,6 +143,8 @@ describe('AuthService', () => {
   });
 
   afterAll(async () => {
-    await userService.deleteByEmail('test1@example.com');
+    await userService.clearAllUsers();
+    await connectionSource.destroy();
+    await module.close();
   });
 });

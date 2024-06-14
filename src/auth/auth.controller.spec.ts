@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { LoggerService } from '../common/custom-logger/logger.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
-import typeorm from '../config/typeorm';
+import typeorm, { connectionSource } from '../config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRolesEnum } from '../user/enum/user-roles.enum';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -17,16 +17,10 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 describe('AuthController', () => {
   let authController: AuthController;
   let userService: UserService;
-
-  /* const mockAuthService = {
-    register: jest.fn(),
-    login: jest.fn(),
-    refreshToken: jest.fn(),
-    logout: jest.fn(),
-  } */
+  let module: TestingModule;
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -105,6 +99,8 @@ describe('AuthController', () => {
   });
 
   afterAll(async () => {
-    await userService.deleteByEmail('test1@example.com');
+    await userService.clearAllUsers();
+    await connectionSource.destroy();
+    await module.close();
   });
 });
