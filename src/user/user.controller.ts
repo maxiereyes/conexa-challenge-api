@@ -22,11 +22,11 @@ import { UserRolesEnum } from './enum/user-roles.enum';
 @ApiBearerAuth()
 @Controller('user')
 @ApiTags('User')
+@UseGuards(AccessTokenGuard, RolesGuard)
+@Roles(UserRolesEnum.ADMIN)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRolesEnum.ADMIN)
   @Get()
   @ApiResponseSuccessCustom(UserResponseWithoutPassDto)
   @ApiBadRequestResponse({ type: ExceptionFilterDto })
@@ -34,8 +34,6 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRolesEnum.USER, UserRolesEnum.ADMIN)
   @Get(':id')
   @ApiResponseSuccessCustom(UserResponseWithoutPassDto)
   @ApiBadRequestResponse({ type: ExceptionFilterDto })
@@ -43,8 +41,6 @@ export class UserController {
     return this.userService.findById(id);
   }
 
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRolesEnum.USER, UserRolesEnum.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -53,8 +49,6 @@ export class UserController {
     return this.userService.update(id, payload);
   }
 
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles(UserRolesEnum.ADMIN)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     return await this.userService.delete(id);

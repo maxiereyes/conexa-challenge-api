@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movie } from 'src/entitites';
 import { Repository } from 'typeorm';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
+import { plainToInstance } from 'class-transformer';
+import { MovieResponseDto } from './dto/movie-response.dto';
 
 @Injectable()
 export class MovieService {
@@ -10,23 +14,62 @@ export class MovieService {
     private readonly movieRepository: Repository<Movie>,
   ) {}
 
-  create(payload: any) {
-    return 'create movie';
+  async create(payload: CreateMovieDto) {
+    const newMovie = new Movie({
+      ...payload,
+    });
+
+    const movie = await this.movieRepository.save(newMovie);
+
+    return plainToInstance(MovieResponseDto, movie, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  update(id: string, payload: any) {
-    return 'update movie';
+  async update(id: string, payload: UpdateMovieDto) {
+    const movie = await this.findById(id);
+
+    if (!movie) {
+      throw new BadRequestException('Movie not found');
+    }
+
+    const updatedMovie = await this.movieRepository.save({
+      ...movie,
+      ...payload,
+    });
+
+    return plainToInstance(MovieResponseDto, updatedMovie, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  delete(id: string) {
-    return 'delete movie';
+  async delete(id: string) {
+    const movie = await this.findById(id);
+
+    if (!movie) {
+      throw new BadRequestException('Movie not found');
+    }
+
+    return await this.movieRepository.delete({ id });
   }
 
-  findAll() {
-    return 'find all movies';
+  async findAll() {
+    const movies = await this.movieRepository.find();
+
+    return plainToInstance(MovieResponseDto, [movies], {
+      excludeExtraneousValues: true,
+    });
   }
 
-  findById(id: string) {
-    return 'find movie by id';
+  async findById(id: string) {
+    const movie = await this.movieRepository.findOne({ where: { id } });
+
+    if (!movie) {
+      return null;
+    }
+
+    return plainToInstance(MovieResponseDto, movie, {
+      excludeExtraneousValues: true,
+    });
   }
 }
