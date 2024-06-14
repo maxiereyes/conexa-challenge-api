@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entitites';
+import { User } from '../entitites';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
@@ -76,6 +76,14 @@ export class UserService {
 
   async delete(id: string) {
     const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    return await this.usersRepository.remove(user);
+  }
+
+  async deleteByEmail(email: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
     if (!user) {
       throw new BadRequestException('user not found');
     }

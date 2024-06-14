@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBadRequestResponse, ApiTags } from '@nestjs/swagger';
-import { LoggerService } from 'src/common/custom-logger/logger.service';
+import { LoggerService } from '../common/custom-logger/logger.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { ApiResponseSuccessCustom } from 'src/common/decorator/response-success-custom.decorator';
+import { ApiResponseSuccessCustom } from '../common/decorator/response-success-custom.decorator';
 import { AuthResponseDto } from './dto/auth-response.dto';
-import { ExceptionFilterDto } from 'src/common/exception-filters/exception-filter';
+import { ExceptionFilterDto } from '../common/exception-filters/exception-filter';
 import { Request } from 'express';
-import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
+import { AccessTokenGuard } from '../common/guards/access-token.guard';
+import { RefreshTokenGuard } from '../common/guards/refresh-token.guard';
 
 @Controller('auth')
 @ApiTags('Authentication')

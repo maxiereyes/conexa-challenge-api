@@ -10,13 +10,13 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApiResponseSuccessCustom } from 'src/common/decorator/response-success-custom.decorator';
-import { ExceptionFilterDto } from 'src/common/exception-filters/exception-filter';
+import { ApiResponseSuccessCustom } from '../common/decorator/response-success-custom.decorator';
+import { ExceptionFilterDto } from '../common/exception-filters/exception-filter';
 import { UserResponseWithoutPassDto } from './dto/user-response-without-pass.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Roles } from 'src/common/decorator/roles.decorator';
+import { AccessTokenGuard } from '../common/guards/access-token.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorator/roles.decorator';
 import { UserRolesEnum } from './enum/user-roles.enum';
 
 @ApiBearerAuth()
